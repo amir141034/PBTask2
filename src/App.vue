@@ -29,10 +29,9 @@
                 </video>
             </template>
           </q-card>
-          <div
+          <q-intersection
             v-if="index === midpointItemOfLastBatch"
-            :ref="el => preloadMarker = el"
-            style="height: 1px;"
+            @visibility="(visible) => visible && startPreload()"
           />
         </div>
 
@@ -61,27 +60,10 @@ const midpointItemOfLastBatch = computed(() => {
   return lastBatch + Math.floor(batch / 2)
 })
 
-const observeMidpoint = () => {
-  if (!preloadMarker.value) return
-
-  observer?.disconnect()
-
-  observer = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting) {
-      startPreload(batch, tag.value)
-      observer.disconnect()
-    }
-  })
-
-  observer.observe(preloadMarker.value)
-}
-
-const startPreload = (batch, tag) => {
+const startPreload = () => {
   if (preloadPromise) return preloadPromise
 
-  preloadPromise = fetchNextPage(batch, tag).then(res => {
-    return res
-  })
+  preloadPromise = fetchNextPage(batch,tag.value).then(res => res)
 
   return preloadPromise
 }
@@ -97,8 +79,8 @@ const onLoad = async (index, done) => {
     items.value.push(...res.items)
     tag.value = res.tag
 
-    await nextTick()
-    observeMidpoint()
+    // await nextTick()
+    // observeMidpoint()
 
   } finally {
     done()
@@ -109,8 +91,8 @@ onMounted(async () => {
   const res = await fetchFirstPage()
   items.value = res.items ?? []
   tag.value = res.tag
-  await nextTick()
-  observeMidpoint()
+  // await nextTick()
+  // observeMidpoint()
 })
 
 </script>
