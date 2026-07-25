@@ -90,6 +90,7 @@ p {
   max-width: 350px;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
+  padding: 12px;
 }
 
 .page {

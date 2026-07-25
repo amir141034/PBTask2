@@ -13,16 +13,12 @@
       </li>
     </ul>
 
-    <q-card class="card shadow-3">
-      <q-card-section class="text-left q-pa-md">
-        <div class="text-h6" style="font-weight: 900">My Content</div>
-        <div class="text-subtitle2 q-mt-sm">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia nemo molestiae aspernatur fugiat dolores consequuntur natus non maxime illum aperiam fugit officia debitis numquam et architecto, veritatis nisi. Debitis, explicabo?</div>
+    <q-card class="card">
+      <q-card-section class="text-left q-pa-none q-mb-md">
+        <div class="text-h6 text-weight-bold text-grey-9">My Content</div>
+        <div class="text-subtitle2 text-grey-7 q-mt-sm">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia nemo molestiae aspernatur fugiat dolores consequuntur natus non maxime illum aperiam fugit officia debitis numquam et architecto, veritatis nisi. Debitis, explicabo?</div>
       </q-card-section>
-      <q-separator inset/>
-      <q-card-section class="q-pa-none">
-        <q-img src="https://picsum.photos/350/200" ratio="2/3"
-  fit="cover"/>
-      </q-card-section>
+        <img src="https://picsum.photos/400/200"/>
     </q-card>
   </div>
 </template>
