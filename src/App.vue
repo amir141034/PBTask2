@@ -52,7 +52,6 @@ const items = ref([])
 const tag = ref(null)
 const preloadMarker = ref(null)
 let batch = 8
-let observer
 let preloadPromise = null
 
 const midpointItemOfLastBatch = computed(() => {
@@ -79,9 +78,6 @@ const onLoad = async (index, done) => {
     items.value.push(...res.items)
     tag.value = res.tag
 
-    // await nextTick()
-    // observeMidpoint()
-
   } finally {
     done()
   }
@@ -91,8 +87,6 @@ onMounted(async () => {
   const res = await fetchFirstPage()
   items.value = res.items ?? []
   tag.value = res.tag
-  // await nextTick()
-  // observeMidpoint()
 })
 
 </script>

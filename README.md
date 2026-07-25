@@ -44,3 +44,10 @@ src/
 ├── composables/
 └── utils/
 ```
+
+## Decisions / Improvements
+
+- Use Quasar for infinite scroll and q intersection to check last batch midpoint item. Decided to not use Quasar CLI because plain Vue is enough and that will only make it bloated.
+- Content can be video or images. Muted and autoplay; no jumpscare but also no effort to start the video
+- Should do better with the style if have more time
+- Maybe add a to-the-top button
