@@ -1,29 +1,40 @@
 <template>
   <div class="page">
-    <h1>Hello PetBacker Vue Task2</h1>
-    <q-btn
-      label="Load More"
-      @click="loadMore"
-      :loading="isLoading"
-    />
+    <h1 class="text-center">Hello PetBacker Vue Task2</h1>
+    <q-infinite-scroll class="column items-center" @load="onLoad" :offset="250">
+      <div v-for="item in items" :key="item.id">
+        <q-card class="card q-my-md">
+          <q-card-section class="text-left q-pa-none q-mb-md">
+            <div class="text-h6 text-weight-bold text-grey-9">{{item.title}}</div>
+            <div class="text-subtitle2 text-grey-7 text-wrap q-mt-sm" style="min-width: 0; overflow-wrap: break-word;">{{item.description}}</div>
+          </q-card-section>
+            <template v-for="content in item.medias">
+                <img
+                  v-if="content.content_type === 'image'"
+                  class="q-my-md"
+                  :src="content.media_filename"
+                  alt="media"
+                />
 
-    <h1 v-if="items.length === 0 || isLoading">
-      Loading...
-    </h1>
+                <video
+                  v-else-if="content.content_type === 'video'"
+                  class="q-my-md"
+                  controls
+                  muted
+                  playsinline
+                >
+                  <source :src="content.media_filename" type="video/mp4">
+                </video>
+            </template>
+        </q-card>
+      </div>
 
-    <ul>
-      <li v-for="item in items" :key="item.id">
-        {{ item.title }}
-      </li>
-    </ul>
-
-    <q-card class="card">
-      <q-card-section class="text-left q-pa-none q-mb-md">
-        <div class="text-h6 text-weight-bold text-grey-9">My Content</div>
-        <div class="text-subtitle2 text-grey-7 q-mt-sm">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia nemo molestiae aspernatur fugiat dolores consequuntur natus non maxime illum aperiam fugit officia debitis numquam et architecto, veritatis nisi. Debitis, explicabo?</div>
-      </q-card-section>
-        <img src="https://picsum.photos/400/200"/>
-    </q-card>
+      <template v-slot:loading>
+        <div class="row justify-center q-my-md">
+          <q-spinner-dots color="primary" size="40px" />
+        </div>
+      </template>
+    </q-infinite-scroll>
   </div>
 </template>
 
@@ -36,9 +47,7 @@ const tag = ref(null)
 const isLoading = ref(false)
 let batch = 8
 
-const loadMore = async () => {
-  isLoading.value = true
-
+const onLoad = async (index, done) => {
   try {
     const res = await fetchNextPage(batch, tag.value)
 
@@ -46,7 +55,7 @@ const loadMore = async () => {
     tag.value = res.tag
 
   } finally {
-    isLoading.value = false
+    done()
   }
 }
 
