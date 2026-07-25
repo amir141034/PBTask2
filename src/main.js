@@ -5,4 +5,10 @@ import App from './App.vue'
 //Quasar
 import {Quasar} from 'quasar'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+
+app.use(Quasar, {
+  plugins: {}, 
+})
+
+app.mount('#app')
