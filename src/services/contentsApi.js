@@ -12,9 +12,9 @@ export async function fetchFirstPage() {
   }
 }
 
-export async function fetchNextPage(tag) {
+export async function fetchNextPage(batch, tag) {
   const res = await axios.get(BASE_URL, {
-    params: { refresh: 1, type: 0, auth: 0, per_page: 8, Tag: tag }
+    params: { refresh: 1, type: 0, auth: 0, per_page: batch, Tag: tag }
   })
   return {
     items: res.data.items ?? res.data,
