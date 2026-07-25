@@ -8,4 +8,5 @@ export default defineConfig({
     vue({ template: { transformAssetUrls } }),
     quasar()
   ],
+  base: '/PBTask2/'
 })
