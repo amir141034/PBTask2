@@ -1,13 +1,17 @@
 <template>
   <div class="page">
     <h1>Hello PetBacker Vue Task2</h1>
-    <button @click="loadMore">
-      Load More
-    </button>
+    <q-btn
+      label="Load More"
+      @click="loadMore"
+      :loading="isLoading"
+    />
 
-    <h1 v-if="items.length === 0">Loading...</h1>
+    <h1 v-if="items.length === 0 || isLoading">
+      Loading...
+    </h1>
 
-    <ul v-else>
+    <ul>
       <li v-for="item in items" :key="item.id">
         {{ item.title }}
       </li>
@@ -29,15 +33,21 @@ import {ref, onMounted} from 'vue'
 
 const items = ref([])
 const tag = ref(null)
+const isLoading = ref(false)
 let batch = 8
 
 const loadMore = async () => {
-  const res = await fetchNextPage(batch, tag.value)
+  isLoading.value = true
 
-  items.value.push(...(res.items ?? []))
-  tag.value = res.tag
+  try {
+    const res = await fetchNextPage(batch, tag.value)
 
-  console.log(res)
+    items.value.push(...(res.items ?? []))
+    tag.value = res.tag
+
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(async () => {
