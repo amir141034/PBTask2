@@ -21,18 +21,20 @@
                   class="q-my-md"
                   controls
                   muted
+                  autoplay
                   playsinline
+                  loop
                 >
-                  <source :src="content.media_filename" type="video/mp4">
+                <source :src="content.media_filename" type="video/mp4">
                 </video>
             </template>
-        </q-card>
-        <div
-          v-if="index === midpointItemOfLastBatch"
-          :ref="el => preloadMarker = el"
-          style="height: 1px;"
-        />
-      </div>
+          </q-card>
+          <div
+            v-if="index === midpointItemOfLastBatch"
+            :ref="el => preloadMarker = el"
+            style="height: 1px;"
+          />
+        </div>
 
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
@@ -75,20 +77,21 @@ const observeMidpoint = () => {
 }
 
 const startPreload = (batch, tag) => {
-  console.log('start preload')
-  if (!preloadPromise) {
-    preloadPromise = fetchNextPage(batch, tag).then(res=>{
-      console.log('preload finished')
-      return res
-    })
-  }
+  if (preloadPromise) return preloadPromise
+
+  preloadPromise = fetchNextPage(batch, tag).then(res => {
+    return res
+  })
+
   return preloadPromise
 }
 
 const onLoad = async (index, done) => {
-  console.log('normal load')
   try {
-    const res = await (preloadPromise ?? startPreload(batch, tag.value))
+    const res = preloadPromise
+      ? await preloadPromise
+      : await fetchNextPage(batch, tag.value)
+
     preloadPromise = null
 
     items.value.push(...res.items)

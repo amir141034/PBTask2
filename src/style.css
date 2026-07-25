@@ -86,7 +86,9 @@ p {
 /* PBTask2 CSS */
 
 .card{
-  width: 700px;
+  width: 600px;
+  max-width: 100%;
+  margin: 0 auto; 
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 12px;
@@ -97,4 +99,13 @@ p {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+}
+
+.card img,
+.card video {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
