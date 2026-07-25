@@ -2,7 +2,7 @@
   <div class="page">
     <h1 class="text-center">Hello PetBacker Vue Task2</h1>
     <q-infinite-scroll class="column items-center" @load="onLoad" :offset="250">
-      <div v-for="item in items" :key="item.id">
+      <div v-for="(item, index) in items" :key="item.id">
         <q-card class="card q-my-md">
           <q-card-section class="text-left q-pa-none q-mb-md">
             <div class="text-h6 text-weight-bold text-grey-9">{{item.title}}</div>
@@ -27,6 +27,11 @@
                 </video>
             </template>
         </q-card>
+        <div
+          v-if="index === midpointItemOfLastBatch"
+          :ref="el => preloadMarker = el"
+          style="height: 1px;"
+        />
       </div>
 
       <template v-slot:loading>
@@ -40,19 +45,57 @@
 
 <script setup>
 import { fetchFirstPage, fetchNextPage } from './services/contentsApi'
-import {ref, onMounted} from 'vue'
+import {ref, computed, nextTick, onMounted} from 'vue'
 
 const items = ref([])
 const tag = ref(null)
-const isLoading = ref(false)
+const preloadMarker = ref(null)
 let batch = 8
+let observer
+let preloadPromise = null
+
+const midpointItemOfLastBatch = computed(() => {
+  const lastBatch = items.value.length - batch
+  return lastBatch + Math.floor(batch / 2)
+})
+
+const observeMidpoint = () => {
+  if (!preloadMarker.value) return
+
+  observer?.disconnect()
+
+  observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      startPreload(batch, tag.value)
+      observer.disconnect()
+    }
+  })
+
+  observer.observe(preloadMarker.value)
+}
+
+const startPreload = (batch, tag) => {
+  console.log('start preload')
+  if (!preloadPromise) {
+    preloadPromise = fetchNextPage(batch, tag).then(res=>{
+      console.log('preload finished')
+      return res
+    })
+  }
+  return preloadPromise
+}
 
 const onLoad = async (index, done) => {
+  console.log('normal load')
   try {
-    const res = await fetchNextPage(batch, tag.value)
+    const res = await (preloadPromise ?? startPreload(batch, tag.value))
+    preloadPromise = null
 
-    items.value.push(...(res.items ?? []))
+    items.value.push(...res.items)
     tag.value = res.tag
+
+    await nextTick()
+    observeMidpoint()
 
   } finally {
     done()
@@ -63,6 +106,8 @@ onMounted(async () => {
   const res = await fetchFirstPage()
   items.value = res.items ?? []
   tag.value = res.tag
+  await nextTick()
+  observeMidpoint()
 })
 
 </script>
