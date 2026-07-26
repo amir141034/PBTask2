@@ -1,6 +1,13 @@
-# PBTask2
+# Task 2 - Infinite Scroll Content Feed
 
-PetBacker Vue programmer test Task 2. Infinite scroll Vue.JS website. Mobile view priority
+A mobile-first Vue.js website that displays a feed of content (title, description, first photo) from the PetBacker moments API, with infinite scroll pagination and preloading.
+
+## Features
+
+- Fetches and displays content from the API; Title, Description and Content
+- Preloading; halfway through the last batch content
+- Loader
+- Mobile viewports prioritise
 
 ## Tech Stack
 
@@ -45,9 +52,19 @@ src/
 └── utils/
 ```
 
+## Deployed in Github Pages
+
+Link: https://amir141034.github.io/PBTask2/
+
+## API Notes
+
+- First page: https://pbapi.forwen.com/v5/moments?refresh=1&type=0&auth=0&per_page=8
+- Subsequent pages: repeat the same call, adding the Tag into header returned in the response header from the previous call. No page number is needed — the server returns the next batch automatically based on the Tag.
+
 ## Decisions / Improvements
 
-- Use Quasar for infinite scroll and q intersection to check last batch midpoint item. Decided to not use Quasar CLI because plain Vue is enough and that will only make it bloated.
-- Content can be video or images. Muted and autoplay; no jumpscare but also no effort to start the video
-- Should do better with the style if have more time
-- Maybe add a to-the-top button
+- Leveraged Quasar's `QInfiniteScroll` and `QIntersection` components to detect when the midpoint item of the current batch enters the viewport, triggering preload of the next page ahead of time
+- Opted for plain Vue over the full Quasar CLI for this task, keeping the bundle lightweight since the project's scope didn't require the additional framework overhead
+- Supported both image and video content types; videos are muted and set to autoplay for a smooth, non-intrusive browsing experience without requiring user interaction to start playback
+- Further visual polish is planned for future iterations to enhance overall styling
+- A "scroll to top" button is planned as a future enhancement to improve navigation on longer feeds
